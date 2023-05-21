@@ -1,5 +1,5 @@
 # Practice
-재밌는 것들 :: Young, Wild & Free
+코드조각모음
   
 그냥 적어본 코드 +
 그냥 풀어본 코드 +
