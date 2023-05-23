@@ -10,8 +10,10 @@
   
 일명 '은아의 코드조각모음'!
 
-This repository contains code and resources that serve as a starting point for me to become a good developer, as well as resources that showcase the attitude I am preparing.
-These are small snippets of code that I learned during the process of preparing to become a developer, including code that I want to remember.
+This repository contains code and resources that serve as a starting point for me to become a good developer, 
+as well as resources that showcase the attitude I am preparing.
+These are small snippets of code that I learned during the process of preparing to become a developer, 
+including code that I want to remember.
 Also known as 'Euna's Code Snippet Collection'.
 
 2022.09 ~
