@@ -15,6 +15,6 @@ as well as resources that showcase the attitude I am preparing.
 These are small snippets of code that I learned during the process of preparing to become a developer, 
 including code that I want to remember.
  
-Also known as 'Euna's Code Snippet Collection'!
+Also known as 'Euna's Code defragmentation'!
 
 2022.09 ~
