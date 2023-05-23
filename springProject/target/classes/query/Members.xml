@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.client.members.dao.MembersDAO">
+	
+	<!-- 회원 가입  -->
+	<insert id="signUp" parameterType="Members">
+		insert into members(num,id,pw,name,phone,email,address)
+		values( members_seq.nextval, #{id}, #{pw}, #{name}, #{phone}, #{email}, #{address})
+	</insert>
+	
+
+	<!-- 로그인처리  -->
+	<select id="logIn" parameterType="Members" resultType="Members" >
+		select num,id,pw,name,phone,email,address,to_char(regDate,'YYYY-MM-DD') as regdate,status,gender,birth
+		from members 
+		where id = #{id} and pw = #{pw} 
+	</select>
+	<!-- 회원리스트 -->
+	<select id="membersList" resultType="Members" >
+		select num,id,pw,name,phone,email,address,regdate,status from members
+		order by num asc  
+	</select>
+	
+	<!-- 회원정보 상세조회 -->
+	<select id="membersDetail" parameterType="Members" resultType="Members" >
+		select num,id,pw,name,phone,email,address,to_char(regDate,'YYYY-MM-DD') as regDate,status,gender,birth
+		from members 
+		where num = #{num} 
+	</select>
+	<!-- 회원정보 수정  -->
+	<update id="membersUpdate">
+		update members 
+		set pw= #{pw},phone=#{phone}, email=#{email}, address=#{address},gender=#{gender},birth=#{birth}
+		where num = #{num}
+	</update>
+	<!-- 회원 탈퇴 -->
+	<update id="membersUnresigter">
+		update members 
+		set status = '1' 
+		where num = #{num}
+	</update>
+	
+	<!-- 아이디 중복 확인 -->
+	<select id="checkId" parameterType="Members" resultType="int" >
+		select nvl((select count(*) 
+		from members 
+		where id = #{id} ), 0) as result from dual
+	</select>
+	
+	<!-- 비밀번호 확인 -->
+	<select id="checkPwd" parameterType="Members" resultType="int" >
+		select nvl((select count(*) 
+		from members where num = #{num} and pw= #{pw} ),0) as result 
+		from dual
+	</select>
+	
+	<!-- 아이디 비밀번호 확인 -->
+	<select id="checkIdPwd" parameterType="Members" resultType="int" >
+		SELECT nvl((select count(*) 
+		from members where id = #{id} and pw = #{pw} and status = #{status} ), 0) as result 
+		from dual
+	</select>
+</mapper>

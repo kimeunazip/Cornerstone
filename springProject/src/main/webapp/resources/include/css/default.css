@@ -1,0 +1,6 @@
+@charset "UTF-8";
+
+/* 공통 부분 */
+textarea{resize:none;}
+.required{color:red;}
+.table-height{min-height: 407px;}
