@@ -1,4 +1,4 @@
-# springProject(23.02)
+# SpringProject(23.02)
  
 springframework를 이용한 게시판 CRUD/Login/Logout/File upload/Reply
  

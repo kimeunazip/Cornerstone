@@ -1,0 +1,16 @@
+package com.members.members.controller;
+
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import com.members.common.controller.Controller;
+
+public class LoginResultController implements Controller {
+	
+	@Override
+	public String execute(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("LoginResultController서블릿입니다. ");
+		return "/members/loginResult";
+	}
+	
+}
