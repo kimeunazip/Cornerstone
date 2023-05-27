@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.client.board.dao.BoardDAO">
+
+	<!--게시판 전체 조회  -->
+	<!-- <select id="boardList" resultType="Board">
+		select b_num,b_name,b_title,to_char(b_date,'YYYY-MM-DD') as b_date, b_hit
+		from spring_board2
+		order by b_num desc
+	</select> -->
+	
+	<!--게시글 등록1
+	<insert id="boardInsert" parameterType="Board">
+		<selectKey keyProperty="b_num" resultType="int" order="BEFORE">
+			select case when max(b_num) is null then 1
+			else max(b_num)+1 end from spring_board2
+		</selectKey>
+		
+		insert into spring_board2(b_num,b_name,b_title,b_content,b_pwd)
+		values(#{b_num},#{b_name},#{b_title},#{b_content},#{b_pwd})
+	</insert>-->
+	
+	<!--게시글 등록2(파일업로드기능추가)-->
+	<insert id="boardInsert" parameterType="Board">
+		<selectKey keyProperty="b_num" resultType="int" order="BEFORE">
+			select case when max(b_num) is null then 1
+			else max(b_num)+1 end from spring_board2
+		</selectKey>
+		
+		insert into spring_board2(b_num,b_name,b_title,b_content,b_pwd,b_thumb,b_file)
+		values(#{b_num},#{b_name},#{b_title},#{b_content},#{b_pwd},#{b_thumb},#{b_file})
+	</insert>
+	
+	<!--게시글 상세 조회  -->
+	<select id="boardDetail" parameterType="Board" resultType="Board">
+		select b_num,b_name,b_title,b_content,b_pwd,to_char(b_date,'YYYY-MM-DD') as b_date,b_hit,b_thumb,b_file
+		from spring_board2
+		where b_num = #{b_num}
+	</select>
+	
+	<!--게시글 수정  -->
+	<update id="boardUpdate" parameterType="Board">
+		update spring_board2 
+		set b_title = #{b_title} , b_content = #{b_content} ,b_thumb = #{b_thumb},b_file=#{b_file}
+		where b_num = #{b_num}
+	</update>
+	
+	<!--게시글 삭제 -->
+	<delete id="boardDelete" parameterType="Board">
+		delete from spring_board2 
+		where b_num = #{b_num}
+	</delete>
+	
+	<!--게시글 비밀번호 확인  -->
+	<select id="pwdCheck" parameterType="Board" resultType="int">
+		select nvl((select count(*) from spring_board2 where b_num = #{b_num} and b_pwd= #{b_pwd} ) ,0)
+		as result from dual
+	</select>
+	
+	 <!--게시글 조회수 증가  -->
+	 <update id="updateHit" parameterType="Board">
+	 	update spring_board2 set b_hit = b_hit+1
+	 	where b_num = #{b_num}
+	 </update>
+	 <!-- 하단 중복 
+	 <sql id="boardSearch">
+	 		<if test="search=='b_title'">
+				<![CDATA[ b_title LIKE '%'|| #{keyword} ||'%' ]]>					
+			</if>
+			<if test="search=='b_content'">
+				<![CDATA[ b_content LIKE '%'|| #{keyword} ||'%' ]]>					
+			</if>
+			<if test="search=='b_name'">
+				<![CDATA[ b_name LIKE '%'|| #{keyword} ||'%' ]]>					
+			</if>
+	 </sql>-->
+	 
+	 <!-- 페이징을 위한 게시글 총 갯수 구하기  -->
+	 <select id="getTotal" parameterType="Board"  resultType="int">
+		 select count(*) from spring_board2
+		 <trim prefix="where(" suffix=")" >
+		 	<if test="search=='b_title'">
+				<![CDATA[ b_title LIKE '%'|| #{keyword} ||'%' ]]>					
+			</if>
+			<if test="search=='b_content'">
+				<![CDATA[ b_content LIKE '%'|| #{keyword} ||'%' ]]>					
+			</if>
+			<if test="search=='b_name'">
+				<![CDATA[ b_name LIKE '%'|| #{keyword} ||'%' ]]>					
+			</if>
+		 </trim>
+	</select>
+	
+	<!-- 페이징 처리  -->
+	<!--
+	 <select id="pagingList" parameterType="Board" resultType="Board">
+		<![CDATA[
+			select rnum,b_num,b_name,b_title,b_date, b_hit
+			from (select rownum rnum, b_num,b_name,b_title,to_char(b_date,'YYYY-MM-DD') as b_date, b_hit
+				 from spring_board2 
+				 where rownum <= ${pageNum*amount}
+				 ) 
+			where rnum> ${ (pageNum-1 ) * amount} 
+			order by b_num desc
+		]]>
+	</select>
+	-->
+	 <!--  = #{pageNum} * #{amount} -->
+	 <!-- = (#{pageNum} -1 ) * #{amount} -->
+	 <!-- $를 쓰면 자바자체에서 연산 후 처리  -->
+	 
+	 <!-- 검색가능한 게시판 전체조회 
+	 
+	 <select id="boardList" parameterType="Board" resultType="Board">
+		select b_num,b_name,b_title,to_char(b_date,'YYYY-MM-DD') as b_date, b_hit
+		from spring_board2
+		<where>
+			<if test="search=='b_title'">
+				<![CDATA[ b_title LIKE '%'|| #{keyword} ||'%' ]]>					
+			</if>
+			<if test="search=='b_content'">
+				<![CDATA[ b_content LIKE '%'|| #{keyword} ||'%' ]]>					
+			</if>
+			<if test="search=='b_name'">
+				<![CDATA[ b_name LIKE '%'|| #{keyword} ||'%' ]]>					
+			</if>
+		</where>
+		order by b_num desc
+	</select> 
+	-->
+	
+	<!-- 검색가능 + 페이징 게시판 전체조회 -->
+	 <select id="searchPagingList" parameterType="Board" resultType="Board">
+		<![CDATA[
+			select b_num,b_name,b_title,b_title,to_char(b_date,'YYYY-MM-DD') as b_date, b_hit,b_thumb,b_file,
+			(select count(r_num) from spring_reply where b_num = boardList.b_num) as r_cnt
+			from 
+				(select /*+index_desc(spring_board2 spring_board2_PK) */
+						rownum as rnum, b_num,b_name,b_title,b_date, b_hit,b_thumb,b_file
+				 from spring_board2 
+				 where ]]>
+				 <trim prefix="(" suffix=") and " prefixOverrides="and">
+				 	<include refid="boardSearch"></include>
+				 </trim> 
+		<![CDATA[		 
+				 rownum <= #{pageNum}* #{amount} 
+				 ) boardList
+				where rnum> (#{pageNum}-1) * #{amount} 
+		]]>
+	</select>
+	
+	<sql id="boardSearch">
+		<if test="search=='b_title'">
+			<![CDATA[ b_title LIKE '%'|| #{keyword} ||'%' ]]>
+		</if>
+		<if test="search=='b_content'">
+			<![CDATA[ b_content LIKE '%'|| #{keyword} ||'%' ]]>	
+		</if>
+		<if test="search=='b_name'">
+			<![CDATA[ b_name LIKE '%'|| #{keyword} ||'%' ]]>
+		</if>
+		<if test="search=='b_date'">
+			<![CDATA[ to_char(b_date,'YYYY-MM-DD') between #{start_date} and #{end_date}  ]]>	
+		</if>
+	</sql>
+</mapper>
