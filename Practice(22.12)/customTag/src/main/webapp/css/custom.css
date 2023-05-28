@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+.wheat{ background-color:wheat;}
+.lemon{ background-color:#ffffca; color:#808080;}
+.center { 
+	display:flex;
+	align-items: center;
+	justify-content: center;
+}
+.salmon{
+	color:salmon;
+}
+.naver{
+	width:600px;
+	height:600px;
+}
+table{
+	border-collapse: collapse;
+}
+td{
+	background-color: #f7f7f7;
+	border:1px solid black;
+	padding:6px;
+}
+div.target{margin:5px;}
